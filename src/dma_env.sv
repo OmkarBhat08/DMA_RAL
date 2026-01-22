@@ -5,7 +5,7 @@ class dma_env extends uvm_env;
 
 	dma_reg_block reg_block;
 	dma_adapter adapter;
-	uvm_reg_predictor #(dma_seq_item) predictor;
+	uvm_reg_predictor #(dma_sequence_item) predictor;
 
 	`uvm_component_utils(dma_env)
 
@@ -21,7 +21,7 @@ class dma_env extends uvm_env;
 
 		reg_block = dma_reg_block::type_id::create("reg_block");
 		adapter = dma_adapter::type_id::create("adapter");
-		predictor = uvm_reg_predictor#(dma_seq_item)::type_id::create("predictor", this);
+		predictor = uvm_reg_predictor#(dma_sequence_item)::type_id::create("predictor", this);
 		reg_block.build();
 	endfunction : build_phase
 
@@ -30,11 +30,10 @@ class dma_env extends uvm_env;
 		agnt.mon.monitor_port.connect(scrb.monitor_aport);
 
 		reg_block.default_map.set_sequencer(.sequencer(agnt.seqr), .adapter(adapter) );
-		regblock.default_map.set_base_addr(0);
-		predictor.map = regblock.default_map;
+		reg_block.default_map.set_base_addr(0);
+		predictor.map = reg_block.default_map;
 		predictor.adapter = adapter;
 		agnt.mon.monitor_port.connect(predictor.bus_in);
-		regblock.default_map.set_auto_predict(0);
 	endfunction : connect_phase
 
 endclass : dma_env

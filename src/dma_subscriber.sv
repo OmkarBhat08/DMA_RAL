@@ -17,7 +17,7 @@ class dma_subscriber extends uvm_component;
 	endgroup
 
 	function new(string name = "dma_subscriber", uvm_component parent = null);
-		super.new(name, parent)
+		super.new(name, parent);
 		monitor_aport = new("monitor_aport", this);
 		monitor_trans = new();
 		input_cov = new();

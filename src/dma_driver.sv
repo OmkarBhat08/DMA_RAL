@@ -4,7 +4,7 @@ class dma_driver extends uvm_driver #(dma_sequence_item);
 
 	`uvm_component_utils(dma_driver)
 
-	function new(string name = "dma_driver", uvm_component parent = null)
+	function new(string name = "dma_driver", uvm_component parent = null);
 		super.new(name, parent);
 	endfunction : new
 
@@ -15,6 +15,7 @@ class dma_driver extends uvm_driver #(dma_sequence_item);
 	endfunction : build_phase
 
 	virtual task run_phase(uvm_phase phase);
+		//@(vif.driver_cb);
 		forever
 		begin
 			seq_item_port.get_next_item(req);
@@ -24,11 +25,18 @@ class dma_driver extends uvm_driver #(dma_sequence_item);
 	endtask : run_phase	
 
 	virtual task drive();
-		repeat(1) @(posedge vif.driver_cb);
+		@(vif.driver_cb);
 		vif.wr_en <= req.wr_en;
 		vif.rd_en <= req.rd_en;
 		vif.wdata <= req.wdata;
 		vif.addr <= req.addr;
+		$display("--------------------------------------@%0t Driver------------------------------------------", $time);
+		$display("wr_en\t %0b", req.wr_en);
+		$display("rd_en\t %0b", req.rd_en);
+		$display("addr\t %0h", req.addr);
+		$display("wdata\t %0h", req.wdata);
+		@(vif.driver_cb);
+		req.rdata = vif.rdata;
 	endtask : drive
 
 endclass : dma_driver

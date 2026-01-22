@@ -4,12 +4,6 @@ class intr_reg extends uvm_reg;
 	uvm_reg_field intr_status;
 	rand uvm_reg_field intr_mask;
 
-	function new(string name = "intr_reg")
-		super.new(name, 32, UVM_CVR_FIELD_VALS);
-		if(has_coverage(UVM_CVR_FIELD_VALS))
-			intr_cg = new();
-	endfunction : new
-
 	covergroup intr_cg();
 		status_cp: coverpoint intr_status.value[0]{
 														bins transfer_not_complete = {0};
@@ -21,6 +15,12 @@ class intr_reg extends uvm_reg;
 																					}
 	endgroup
 
+	function new(string name = "intr_reg");
+		super.new(name, 32, UVM_CVR_FIELD_VALS);
+		if(has_coverage(UVM_CVR_FIELD_VALS))
+			intr_cg = new();
+	endfunction : new
+
 	function void sample(uvm_reg_data_t data, uvm_reg_data_t byte_en, bit is_read, uvm_reg_map map);	// Register auto called
 		intr_cg.sample();
 	endfunction : sample
@@ -28,7 +28,7 @@ class intr_reg extends uvm_reg;
 	function void sample_values();		// mirror and predict value, has to be called 
 		super.sample_values();
 		intr_cg.sample();
-	endfunction : sample
+	endfunction : sample_values
 
 	function void build();
 		intr_status =  uvm_reg_field::type_id::create("intr_status");
@@ -44,14 +44,14 @@ endclass : intr_reg
 
 class ctrl_reg extends uvm_reg;
  	`uvm_object_utils(ctrl_reg)
-  rand uvm_reg_field start_dma
+	rand uvm_reg_field start_dma;
 	rand uvm_reg_field w_count;
 	rand uvm_reg_field io_mem;
   uvm_reg_field Reserved;
 
   covergroup ctrl_cg;
     start_dma_cp: coverpoint start_dma.value;
-    w_count_cp: coverpoint w_count.value{option.auto_bin_max = 4}
+		w_count_cp: coverpoint w_count.value{option.auto_bin_max = 4;}
     io_mem_cp: coverpoint io_mem.value{
 																				bins io2mem = {0};
 																				bins mem2io = {1};
@@ -258,23 +258,23 @@ class transfer_count_reg extends uvm_reg;
   `uvm_object_utils(transfer_count_reg)
   uvm_reg_field transfer_count;
 
-	covergroup transfer_count_cg
-		transfer_count_cp: coverpoint transfer_count{ option.auto_bin_max = 5;}
+	covergroup transfer_count_cg;
+		transfer_count_cp: coverpoint transfer_count.value{option.auto_bin_max = 5;}
 	endgroup
 
   function new(string name = "transfer_count_reg");
     super.new(name,32,UVM_CVR_FIELD_VALS);
     if(has_coverage(UVM_CVR_FIELD_VALS))
-      status_cg = new();
+      transfer_count_cg = new();
   endfunction : new
 
   function void sample(uvm_reg_data_t data, uvm_reg_data_t byte_en, bit is_read, uvm_reg_map map);
-    status_cg.sample();
+    transfer_count_cg.sample();
   endfunction : sample
 
   function void sample_values();
     super.sample_values();
-    status_cg.sample();
+    transfer_count_cg.sample();
   endfunction : sample_values
 
   function void build();
@@ -322,13 +322,13 @@ endclass : descriptor_addr_reg
 
 class error_status_reg extends uvm_reg;
   `uvm_object_utils(error_status_reg)
-  rand uvm_reg_field bus_error
+	rand uvm_reg_field bus_error;
   rand uvm_reg_field timeout_error;
   rand uvm_reg_field alignment_error;
   rand uvm_reg_field overflow_error;
   rand uvm_reg_field underflow_error;
   uvm_reg_field Reserved;
-  uvm_reg_field error_code
+	uvm_reg_field error_code;
   uvm_reg_field error_addr_offset;
 
   covergroup error_status_cg;
@@ -337,7 +337,7 @@ class error_status_reg extends uvm_reg;
 																							bins bus_error = {1};
 																						}
     timeout_error_cp: coverpoint timeout_error.value{
-																							bins no_timeout_error = {0};
+																							bins timeout_error = {0};
 																							bins no_timeout_error = {1};
 																						}
     alignment_error_cp: coverpoint alignment_error.value{
@@ -348,8 +348,8 @@ class error_status_reg extends uvm_reg;
 																							bins no_overflow = {0};
 																							bins overflow_error = {1};
 																						}
-    underflow_error_cp: coverpoint underflow_error.value;
-																							bins no_underflow = {0};
+    underflow_error_cp: coverpoint underflow_error.value{
+																							bins no_underflow_error = {0};
 																							bins underflow_error = {1};
 																						}
   endgroup
@@ -417,13 +417,13 @@ class config_reg extends uvm_reg;
 																							bins no_auto_restart = {0};
 																							bins auto_restart = {1};
 																									}
-    interrupt_enable_cp: coverpoint interrupt_enable.value;
+    interrupt_enable_cp: coverpoint interrupt_enable.value{
 																							bins deasserted = {0};
 																							bins asserted = {1};
 																						}
     burst_size_cp: coverpoint burst_size.value;
     data_width_cp: coverpoint data_width.value;
-    descriptor_mode_cp: coverpoint descriptor_mode.value;
+    descriptor_mode_cp: coverpoint descriptor_mode.value{
 																							bins descriptor_disabled = {0};
 																							bins descriptor_enabled  = {1};
 																						}

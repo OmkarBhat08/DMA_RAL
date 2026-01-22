@@ -1,10 +1,8 @@
 package dma_pkg;
 	import uvm_pkg::*;
 	`include "uvm_macros.svh"
-
-	`include "dma_register_block.sv"
+	`include "dma_reg_block.sv"
 	`include "dma_report_server.sv"
-
 	`include "dma_sequence_item.sv"
 	`include "dma_sequencer.sv"
 	`include "dma_driver.sv"

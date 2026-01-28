@@ -1,1 +1,6 @@
 /src/work/
+/src/covReport/
+/src/vsim.wlf
+/src/vsim_stacktrace.vstf
+/src/simulation.log
+/src/coverage.ucdb

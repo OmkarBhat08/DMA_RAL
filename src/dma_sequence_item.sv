@@ -5,10 +5,10 @@ import uvm_pkg::*;
 class dma_sequence_item extends uvm_sequence_item;
 
 	//Inputs
-	rand logic wr_en;
-	rand logic rd_en;
-	rand logic [`DATA_WIDTH-1:0] wdata;
-	rand logic [`ADDR_WIDTH-1:0] addr;
+	logic wr_en;
+	logic rd_en;
+	logic [`DATA_WIDTH-1:0] wdata;
+	logic [`ADDR_WIDTH-1:0] addr;
 
 	//Output
 	logic [`DATA_WIDTH-1:0] rdata;

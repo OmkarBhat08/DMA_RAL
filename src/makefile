@@ -6,9 +6,7 @@ REGISTER = $(SRC)/register
 PKG      = dma_pkg.sv
 FILE     = top.sv
 TOP      = top
-#TEST     = dma_intr_test
-TEST     = dma_ctrl_test
-#TEST     = dma_io_addr_test
+TEST     = dma_regression_test
 
 # --- Coverage Variables ---
 COV_LOG_FILE   = dma_log.log

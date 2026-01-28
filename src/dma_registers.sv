@@ -6,8 +6,8 @@ class intr_reg extends uvm_reg;
 
 	covergroup intr_cg();
 		status_cp: coverpoint intr_status.value[0]{
-														bins transfer_not_complete = {0};
-														bins transfer_complete = {1};
+														bins transfer_not_completed = {0};
+														bins transfer_completed = {1};
 																							}
 		mask_cp: coverpoint intr_mask.value[0]{
 														bins interrupt_not_enabled = {0};
@@ -50,8 +50,11 @@ class ctrl_reg extends uvm_reg;
   uvm_reg_field Reserved;
 
   covergroup ctrl_cg;
-    start_dma_cp: coverpoint start_dma.value;
-		w_count_cp: coverpoint w_count.value{option.auto_bin_max = 4;}
+    start_dma_cp: coverpoint start_dma.value{
+																							bins ctrl_stop = {0};
+																							bins ctrl_start = {1};
+																						}
+		w_count_cp: coverpoint w_count.value{option.auto_bin_max = 1;}
     io_mem_cp: coverpoint io_mem.value{
 																				bins io2mem = {0};
 																				bins mem2io = {1};
@@ -85,6 +88,7 @@ class ctrl_reg extends uvm_reg;
 
     Reserved = uvm_reg_field::type_id::create("Reserved");
 		Reserved.configure(this, 15, 17, "RO", 0, 'h0, 1, 0, 1);
+		Reserved.set_compare(UVM_NO_CHECK);
   endfunction	: build
 
 endclass : ctrl_reg
@@ -97,7 +101,7 @@ class io_addr_reg extends uvm_reg;
   rand uvm_reg_field io_addr;
 
   covergroup io_addr_cg;
-    io_addr_cp: coverpoint io_addr.value{option.auto_bin_max = 5;}
+    io_addr_cp: coverpoint io_addr.value{option.auto_bin_max = 1;}
   endgroup
 
   function new(string name = "io_addr_reg");
@@ -130,7 +134,7 @@ class mem_addr_reg extends uvm_reg;
   rand uvm_reg_field mem_addr;
 
   covergroup mem_addr_cg;
-    mem_addr_cp: coverpoint mem_addr.value{option.auto_bin_max = 5;}
+    mem_addr_cp: coverpoint mem_addr.value{option.auto_bin_max = 1;}
   endgroup
 
   function new(string name = "mem_addr_reg");
@@ -163,7 +167,7 @@ class extra_info_reg extends uvm_reg;
   rand uvm_reg_field extra_info;
 
   covergroup extra_info_cg;
-    extra_info_cp: coverpoint extra_info.value{option.auto_bin_max = 5;}
+    extra_info_cp: coverpoint extra_info.value{option.auto_bin_max = 1;}
   endgroup
 
   function new(string name = "extra_info_reg");
@@ -203,12 +207,24 @@ class status_reg extends uvm_reg;
 
   covergroup status_cg;
     option.per_instance = 1;
-    busy_cp: coverpoint busy.value;
-    done_cp: coverpoint done.value; 
-    error_cp: coverpoint error.value;
-    paused_cp: coverpoint paused.value;
-    current_state_cp: coverpoint current_state.value;
-    fifo_level_cp: coverpoint fifo_level.value;
+    busy_cp: coverpoint busy.value{
+																		bins not_busy = {0};			
+																		bins busy = {1};			
+																	}
+    done_cp: coverpoint done.value{ 
+																		bins transfer_not_complete = {0};			
+																		bins transfer_complete = {1};			
+																	}
+    error_cp: coverpoint error.value{
+																		bins no_error = {0};			
+																		bins error_detected = {1};			
+																		}
+    paused_cp: coverpoint paused.value{
+																		bins not_paused = {0};			
+																		bins paused = {1};			
+																	}
+    current_state_cp: coverpoint current_state.value{option.auto_bin_max = 1;}
+    fifo_level_cp: coverpoint fifo_level.value{option.auto_bin_max = 1;}
   endgroup
 
   function new(string name = "status_reg");
@@ -259,7 +275,7 @@ class transfer_count_reg extends uvm_reg;
   uvm_reg_field transfer_count;
 
 	covergroup transfer_count_cg;
-		transfer_count_cp: coverpoint transfer_count.value{option.auto_bin_max = 5;}
+		transfer_count_cp: coverpoint transfer_count.value{option.auto_bin_max = 1;}
 	endgroup
 
   function new(string name = "transfer_count_reg");
@@ -292,7 +308,7 @@ class descriptor_addr_reg extends uvm_reg;
   rand uvm_reg_field descriptor_addr;
 
   covergroup descriptor_addr_cg;
-    descriptor_addr_cp: coverpoint descriptor_addr.value{ option.auto_bin_max = 5;}
+    descriptor_addr_cp: coverpoint descriptor_addr.value{ option.auto_bin_max = 1;}
   endgroup
 
   function new(string name = "descriptor_addr_reg");
@@ -412,7 +428,7 @@ class config_reg extends uvm_reg;
 
   covergroup config_cg;
     option.per_instance = 1;
-    prioriti_cp: coverpoint prioriti.value;
+		prioriti_cp: coverpoint prioriti.value{option.auto_bin_max = 1;}
     auto_restart_cp: coverpoint auto_restart.value{
 																							bins no_auto_restart = {0};
 																							bins auto_restart = {1};
@@ -421,8 +437,8 @@ class config_reg extends uvm_reg;
 																							bins deasserted = {0};
 																							bins asserted = {1};
 																						}
-    burst_size_cp: coverpoint burst_size.value;
-    data_width_cp: coverpoint data_width.value;
+		burst_size_cp: coverpoint burst_size.value{option.auto_bin_max = 1;}
+		data_width_cp: coverpoint data_width.value{option.auto_bin_max = 1;}
     descriptor_mode_cp: coverpoint descriptor_mode.value{
 																							bins descriptor_disabled = {0};
 																							bins descriptor_enabled  = {1};

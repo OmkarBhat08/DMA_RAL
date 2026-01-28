@@ -10,6 +10,8 @@ class dma_subscriber extends uvm_component;
 
 	covergroup input_cov();
 		wr_en_cp : coverpoint monitor_trans.wr_en;
+		rd_en_cp : coverpoint monitor_trans.rd_en;
+		wdata_cp : coverpoint monitor_trans.wdata;
 	endgroup
 
 	covergroup output_cov();

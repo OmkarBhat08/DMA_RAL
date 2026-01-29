@@ -239,7 +239,7 @@ class dma_status_sequence extends uvm_sequence #(dma_sequence_item);
 		bit [3:0] status_current_state;
 		bit [7:0] status_fifo_level; 
 
-		w_data[0] = $urandom_range(0,1); 
+		w_data[0] = 0; 
 		w_data[1] = $urandom_range(0,1); 
 		w_data[2] = $urandom_range(0,1); 
 		w_data[3] = $urandom_range(0,1); 
@@ -247,17 +247,16 @@ class dma_status_sequence extends uvm_sequence #(dma_sequence_item);
 		w_data[15:8] = $urandom(); 
 
 		// Poke random value to register
-		`uvm_info("POKING_DATA", $sformatf("status = %0h", w_data), UVM_MEDIUM)
+		`uvm_info("POKING_DATA", $sformatf("status = %b", w_data), UVM_MEDIUM)
 		reg_block.status_reg_h.poke(status, w_data);
-		{status_busy, status_done, status_error, status_paused} = w_data[3:0];
+		{status_paused, status_error, status_done, status_busy} = w_data[3:0];
 		status_current_state = w_data[7:4];
 		status_fifo_level = w_data[15:8];
 		reg_block.status_reg_h.sample_values();
 		
 		//Re randomize to later check for poke
-		w_data[3:0] = 4'b0000; 
-		w_data[7:4] = $urandom(); 
-		w_data[15:8] = $urandom(); 
+		w_data = $urandom(); 
+		w_data[0] = 1'b0; 
 		reg_block.status_reg_h.write(status, w_data, UVM_BACKDOOR);
 
 		// Backdoor Read the value from the register

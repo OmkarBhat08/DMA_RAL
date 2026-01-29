@@ -222,7 +222,8 @@ module dma_design (
                 
                 STATUS_ADDR: begin
                     rdata <= {16'h0, status_fifo_level, status_current_state,
-                              3'b0, status_paused, status_error, status_done, status_busy};
+                              //3'b0, 
+															status_paused, status_error, status_done, status_busy};
                 end
                 
                 TRANSFER_COUNT_ADDR: begin

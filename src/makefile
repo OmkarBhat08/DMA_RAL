@@ -7,6 +7,7 @@ PKG      = dma_pkg.sv
 FILE     = top.sv
 TOP      = top
 TEST     = dma_regression_test
+#TEST     = dma_status_test
 
 # --- Coverage Variables ---
 COV_LOG_FILE   = dma_log.log

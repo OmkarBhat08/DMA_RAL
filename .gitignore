@@ -2,5 +2,5 @@
 /src/covReport/
 /src/vsim.wlf
 /src/vsim_stacktrace.vstf
-/src/simulation.log
+/src/dma_log.log
 /src/coverage.ucdb
